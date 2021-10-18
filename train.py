@@ -31,6 +31,9 @@ def train(model, loader, optimizer, loss_fn, device):
         loss.backward()
         optimizer.step()
         epoch_loss += loss.item()
+        
+        if (i+1) % 10 == 0:
+            print(f'Step {i+1}/{len(loader)}')
 
     epoch_loss = epoch_loss/len(loader)
     return epoch_loss
@@ -72,7 +75,7 @@ if __name__ == "__main__":
 
     """ Hyperparameters """
     size = (512, 512)
-    batch_size = 10
+    batch_size = 4
     num_epochs = 20
     lr = 1e-4
     checkpoint_path = "files/checkpoint.pth"
