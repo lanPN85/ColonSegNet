@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
     """ Hyperparameters """
     size = (512, 512)
-    batch_size = 1
-    num_epochs = 100
+    batch_size = 10
+    num_epochs = 20
     lr = 1e-4
     checkpoint_path = "files/checkpoint.pth"
 
@@ -110,7 +110,7 @@ if __name__ == "__main__":
         start_time = time.time()
 
         train_loss = train(model, train_loader, optimizer, loss_fn, device)
-        scheduler.step(valid_loss)
+        scheduler.step(train_loss)
 
         torch.save(model.state_dict(), checkpoint_path)
 
