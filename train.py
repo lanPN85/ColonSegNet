@@ -4,6 +4,7 @@ import time
 import random
 import numpy as np
 from glob import glob
+from argparse import ArgumentParser
 import cv2
 import torch
 from torch.utils.data import DataLoader
@@ -34,23 +35,12 @@ def train(model, loader, optimizer, loss_fn, device):
     epoch_loss = epoch_loss/len(loader)
     return epoch_loss
 
-def evaluate(model, loader, loss_fn, device):
-    epoch_loss = 0
-
-    model.eval()
-    with torch.no_grad():
-        for i, (x, y) in enumerate(loader):
-            x = x.to(device)
-            y = y.to(device)
-
-            yp = model(x)
-            loss = loss_fn(yp, y)
-            epoch_loss += loss.item()
-
-    epoch_loss = epoch_loss/len(loader)
-    return epoch_loss
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('--data', required=True)
+    args = parser.parse_args()
+    
     """ Seeding """
     seeding(42)
 
@@ -73,11 +63,11 @@ if __name__ == "__main__":
     # valid_x = sorted(glob("new_data/test/image/*"))
     # valid_y = sorted(glob("new_data/test/mask/*"))
 
-    path = "/../../Kvasir-SEG/"
-    (train_x, train_y), (valid_x, valid_y) = load_data(path)
+    path = args.data
+    (train_x, train_y) = load_data(path)
 
-    train_x, train_y = shuffling(train_x, train_y)
-    data_str = f"Dataset Size:\nTrain: {len(train_x)} - Valid: {len(valid_x)}\n"
+#     train_x, train_y = shuffling(train_x, train_y)
+    data_str = f"Dataset Size:\nTrain: {len(train_x)}"
     print_and_save(train_log_path, data_str)
 
     """ Hyperparameters """
@@ -89,19 +79,11 @@ if __name__ == "__main__":
 
     """ Dataset and loader """
     train_dataset = KvasirDataset(train_x, train_y, size)
-    valid_dataset = KvasirDataset(valid_x, valid_y, size)
 
     train_loader = DataLoader(
         dataset=train_dataset,
         batch_size=batch_size,
         shuffle=True,
-        num_workers=2
-    )
-
-    valid_loader = DataLoader(
-        dataset=valid_dataset,
-        batch_size=batch_size,
-        shuffle=False,
         num_workers=2
     )
 
@@ -128,17 +110,13 @@ if __name__ == "__main__":
         start_time = time.time()
 
         train_loss = train(model, train_loader, optimizer, loss_fn, device)
-        valid_loss = evaluate(model, valid_loader, loss_fn, device)
         scheduler.step(valid_loss)
 
-        if valid_loss < best_valid_loss:
-            best_valid_loss = valid_loss
-            torch.save(model.state_dict(), checkpoint_path)
+        torch.save(model.state_dict(), checkpoint_path)
 
         end_time = time.time()
         epoch_mins, epoch_secs = epoch_time(start_time, end_time)
 
         data_str = f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s\n'
         data_str += f'\tTrain Loss: {train_loss:.3f}\n'
-        data_str += f'\t Val. Loss: {valid_loss:.3f}\n'
         print_and_save(train_log_path, data_str)
