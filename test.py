@@ -5,6 +5,7 @@ from operator import add
 import numpy as np
 from glob import glob
 import cv2
+import shutil
 from tqdm import tqdm
 import imageio
 import torch
@@ -45,15 +46,20 @@ def mask_parse(mask):
     return mask
 
 if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('--data', required=True)
+    args = parser.parse_args()
+    
     """ Seeding """
     seeding(42)
 
     """ Folders """
+    shutil.rmtree('results', ignore_errors=True)
     create_dir("results")
 
     """ Load dataset """
-    path = "/../../Kvasir-SEG/"
-    (train_x, train_y), (test_x, test_y) = load_data(path)
+    path = args.data
+    (test_x, test_y) = load_data(path)
 
     """ Hyperparameters """
     size = (512, 512)
