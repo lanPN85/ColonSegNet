@@ -14,13 +14,19 @@ def load_names(path, file_path):
     return images, masks
 
 def load_data(path):
-    train_names_path = f"{path}/train.txt"
-    valid_names_path = f"{path}/val.txt"
-
-    train_x, train_y = load_names(path, train_names_path)
-    valid_x, valid_y = load_names(path, valid_names_path)
-
-    return (train_x, train_y), (valid_x, valid_y)
+    image_dir = os.path.join(path, 'images')
+    mask_dir = os.path.join(path, 'masks')
+    
+    image_files = os.listdir(image_dir)
+       
+    train_x, train_y = [], []
+    for imf in image_files:
+        image_path = os.path.join(image_dir, imf)
+        train_x.append(image_path)
+        mask_path = os.path.join(mask_dir, imf)
+        train_y.append(mask_path)
+    
+    return (train_x, train_y)
 
 class KvasirDataset(Dataset):
     """ Dataset for the Kvasir-SEG dataset. """
