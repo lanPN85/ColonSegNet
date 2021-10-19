@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     """ Hyperparameters """
     size = (352, 352)
-    batch_size = 4
+    batch_size = 12
     num_epochs = 20
     lr = 1e-4
     checkpoint_path = "files/checkpoint.pth"
