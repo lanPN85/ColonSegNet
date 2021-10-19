@@ -62,7 +62,7 @@ if __name__ == "__main__":
     (test_x, test_y) = load_data(path)
 
     """ Hyperparameters """
-    size = (512, 512)
+    size = (352, 352)
     checkpoint_path = "files/checkpoint.pth"
 
     """ Directories """
