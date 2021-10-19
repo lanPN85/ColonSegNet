@@ -74,7 +74,7 @@ if __name__ == "__main__":
     print_and_save(train_log_path, data_str)
 
     """ Hyperparameters """
-    size = (512, 512)
+    size = (352, 352)
     batch_size = 4
     num_epochs = 20
     lr = 1e-4
