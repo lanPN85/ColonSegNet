@@ -76,7 +76,7 @@ if __name__ == "__main__":
     """ Hyperparameters """
     size = (512, 512)
     batch_size = 4
-    num_epochs = 20
+    num_epochs = 40
     lr = 1e-4
     checkpoint_path = "files/checkpoint.pth"
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         dataset=train_dataset,
         batch_size=batch_size,
         shuffle=True,
-        num_workers=2
+        num_workers=8
     )
 
     """ Model """
