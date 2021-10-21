@@ -49,6 +49,7 @@ def mask_parse(mask):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data', required=True)
+    parser.add_argument('--out', required=True)
     args = parser.parse_args()
     
     """ Seeding """
@@ -67,8 +68,8 @@ if __name__ == "__main__":
     checkpoint_path = "files/checkpoint.pth"
 
     """ Directories """
-    create_dir("results/mix")
-    create_dir("results/mask")
+#     create_dir("results/mix")
+    create_dir(args.out)
 
     """ Load the checkpoint """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -143,8 +144,8 @@ if __name__ == "__main__":
         ]
 
         cat_images = np.concatenate(tmp, axis=1)
-        cv2.imwrite(f"results/mix/{name}.png", cat_images)
-        cv2.imwrite(f"results/mask/{name}.png", pred_y1)
+#         cv2.imwrite(f"results/mix/{name}.png", cat_images)
+        cv2.imwrite(os.path.join(args.out, f"{name}.png"), pred_y1)
 
     jaccard = metrics_score[0]/len(test_x)
     f1 = metrics_score[1]/len(test_x)
