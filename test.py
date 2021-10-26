@@ -50,6 +50,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data', required=True)
     parser.add_argument('--out', required=True)
+    parser.add_argument('--soft', action='store_true')
     args = parser.parse_args()
     
     """ Seeding """
@@ -127,7 +128,7 @@ if __name__ == "__main__":
             pred_y1 = np.squeeze(pred_y1, axis=0)
             pred_y1 = pred_y1 > 0.5
             pred_y1 = pred_y1.astype(np.int32)
-            pred_y1 = apply_crf(ori_img1, pred_y1)
+            pred_y1 = apply_crf(ori_img1, pred_y1, soft=args.soft)
             pred_y1 = pred_y1 * 255
             # pred_y = np.transpose(pred_y, (1, 0))
             pred_y1 = np.array(pred_y1, dtype=np.uint8)
