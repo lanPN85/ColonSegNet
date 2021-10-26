@@ -5,7 +5,7 @@ import cv2
 import pydensecrf.densecrf as dcrf
 from pydensecrf.utils import unary_from_labels, create_pairwise_bilateral
 
-def apply_crf(ori_image, mask):
+def apply_crf(ori_image, mask, soft=False):
     """ Conditional Random Field
     ori_image: np.array with value between 0-255
     mask: np.array with value between 0-1
@@ -37,7 +37,10 @@ def apply_crf(ori_image, mask):
     Q = d.inference(10)
 
     ## Find out the most probable class for each pixel.
-    MAP = np.argmax(Q, axis=0)
+    if not soft:
+        MAP = np.argmax(Q, axis=0)
+    else:
+        MAP = Q[1,...]
 
     return MAP.reshape((ori_image.shape[0], ori_image.shape[1]))
 
