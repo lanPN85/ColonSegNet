@@ -40,7 +40,7 @@ def apply_crf(ori_image, mask, soft=False):
     if not soft:
         MAP = np.argmax(Q, axis=0)
     else:
-        MAP = Q[1,...]
+        MAP = np.asarray(Q)[1,...]
 
     return MAP.reshape((ori_image.shape[0], ori_image.shape[1]))
 
